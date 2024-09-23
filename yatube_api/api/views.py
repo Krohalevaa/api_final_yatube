@@ -99,7 +99,7 @@ class FollowViewSet(viewsets.ModelViewSet):
         Фильтрует по полю `following__username`, если указан параметр поиска.
         """
         if self.request.user.is_anonymous:
-            raise ValidationError("User must be authenticated.")
+            raise ValidationError("Пользователь должен быть авторизован.")
         queryset = Follow.objects.filter(user=self.request.user)
         search_query = self.request.query_params.get('search', None)
         if search_query:
