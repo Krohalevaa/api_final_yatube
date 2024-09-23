@@ -127,7 +127,8 @@ class FollowViewSet(viewsets.ModelViewSet):
 
         # Проверяем, существует ли подписка
         if Follow.objects.filter(
-            user=self.request.user, following=following).exists():
+            user=self.request.user, following=following
+        ).exists():
             raise serializers.ValidationError(
                 "Вы уже подписаны на этого пользователя.")
 
