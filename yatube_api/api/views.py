@@ -9,7 +9,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.exceptions import ValidationError
 
 
-class PostPagination(LimitOffsetPagination):
+class CommentPagination(LimitOffsetPagination):
     """Класс, в котором происходит управление пангинацией в списке постов."""
     default_limit = 2  # Количество объектов по умолчанию
     max_limit = 10  # Максимальное возвращаемое количество объектов
@@ -19,7 +19,7 @@ class PostViewSet(viewsets.ModelViewSet):
     """Управление операциями CRUD с постами."""
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    pagination_class = PostPagination
+    pagination_class = LimitOffsetPagination
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -46,6 +46,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet для управления операциями CRUD с комментариями."""
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    pagination_class = CommentPagination
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -66,10 +67,9 @@ class CommentViewSet(viewsets.ModelViewSet):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return Response(serializer.data)  # возвращаем список данных
-
+            return Response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data)  # тут возвращаем список данных
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
