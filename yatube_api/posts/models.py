@@ -1,18 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-# from posts.constant import MAX_LENGTH
-
 User = get_user_model()
 
 
 class Post(models.Model):
-    # title = models.CharField(max_length=100)
+    """Модель для хранения постов пользователей."""
     text = models.TextField()
     pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True)
-    # update_date = models.DateTimeField(
-    #     'Дата обновления публикации', auto_now=True)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='posts')
     image = models.ImageField(
@@ -29,6 +25,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    """Модель для хранения комментариев к постам."""
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey(
@@ -36,11 +33,10 @@ class Comment(models.Model):
     text = models.TextField()
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
-    # updated = models.DateTimeField(
-    #     'Дата обновления комментария', auto_now=True)
 
 
 class Follow(models.Model):
+    """Модель для хранения подписок пользователей друг на друга."""
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='follows')
     following = models.ForeignKey(
@@ -51,22 +47,7 @@ class Follow(models.Model):
 
 
 class Group(models.Model):
+    """Модель для хранения групп, к которым могут относиться посты."""
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, default='default-group')
     description = models.TextField()
-
-    # def __str__(self):
-    #     return self.title
-# default='default-group
-#
-
-
-# from django.db import models
-
-# class Group(models.Model):
-#     title = models.CharField(max_length=200)
-#     slug = models.SlugField(unique=True)  # Поле slug должно быть определено
-#     description = models.TextField()
-
-#     def __str__(self):
-#         return self.title
