@@ -18,7 +18,7 @@ SQLite
 # Установка и запуск проекта:
 ## Клонирование репозитория
 ```bash
-git clone git clone https://github.com/your-repository/yatube-api.git
+git clone git clone https://github.com/Krohalevaa/api_final_yatube.git
 cd yatube-api
 ```
 
