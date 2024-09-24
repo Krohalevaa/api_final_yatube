@@ -1,8 +1,8 @@
-from posts.models import Comment, Post, Group, Follow
-
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from django.contrib.auth import get_user_model
+
+from posts.models import Comment, Post, Group, Follow
 
 User = get_user_model()
 
@@ -44,3 +44,11 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Follow
+
+    def validate_following(self, value):
+        """Проверка на то, что нельзя подписаться на самого себя."""
+        request = self.context['request']
+        if value == request.user:
+            raise serializers.ValidationError(
+                "Невозможно фолловить себя.")
+        return value

@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from .constants import MAX_LENGTH
+
 User = get_user_model()
 
 
@@ -48,6 +50,6 @@ class Follow(models.Model):
 
 class Group(models.Model):
     """Модель для хранения групп, к которым могут относиться посты."""
-    title = models.CharField(max_length=100)
+    title = models.CharField(MAX_LENGTH)
     slug = models.SlugField(unique=True, default='default-group')
     description = models.TextField()

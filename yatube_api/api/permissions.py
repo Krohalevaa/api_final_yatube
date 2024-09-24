@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework import permissions
 
 
 class IsOwnerOrReadOnly(BasePermission):
@@ -8,9 +9,10 @@ class IsOwnerOrReadOnly(BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if request.method in SAFE_METHODS:
+        if request.method in SAFE_METHODS or obj.author == request.user:
             return True
-        return obj.author == request.user
+        else:
+            return False
 
 
 class IsAuthenticatedAndOwnerOrReadOnly(BasePermission):
@@ -22,4 +24,11 @@ class IsAuthenticatedAndOwnerOrReadOnly(BasePermission):
         return request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
-        return obj.author == request.user
+        if request.method in permissions.SAFE_METHODS:
+            # Безопасные методы (GET, HEAD, OPTIONS) доступны
+            # всем аутентифицированным пользователям
+            return True
+        else:
+            # Методы редактирования (PUT, PATCH, DELETE)
+            # доступны только владельцу объекта
+            return obj.author == request.user
