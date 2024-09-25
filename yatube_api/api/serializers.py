@@ -52,3 +52,20 @@ class FollowSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Невозможно фолловить себя.")
         return value
+
+    def validate(self, data):
+        """Проверяет, что пользователь еще не фолловит юзера."""
+        user = self.context['request'].user
+        following = data['following']
+
+        if Follow.objects.filter(user=user, following=following).exists():
+            raise serializers.ValidationError(
+                "Вы уже подписаны на этого пользователя.")
+        return data
+
+    def create(self, validated_data):
+        """
+        Создает новую подписку, добавляя текущего пользователя как автора.
+        """
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
