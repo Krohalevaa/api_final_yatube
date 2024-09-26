@@ -2,7 +2,7 @@ from rest_framework import filters, viewsets, permissions
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import get_object_or_404
 
-from posts.models import Post, Comment, Group
+from posts.models import Post, Group
 from .serializers import (
     PostSerializer, CommentSerializer, GroupSerializer, FollowSerializer)
 from .permissions import IsOwnerOrReadOnly
@@ -26,7 +26,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet для управления операциями CRUD с комментариями."""
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
@@ -36,7 +35,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         Возвращает список комментариев, отфильтрованный по посту.
         """
         post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
-        # Возвращаем комментарии, связанные с этим постом через related_name
         return post.comments.all()
 
     def perform_create(self, serializer):
@@ -44,7 +42,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         Создает новый комментарий для указанного поста,
         привязывая его к текущему пользователю.
         """
-        post = Post.objects.get(id=self.kwargs.get('post_id'))
+        post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
         serializer.save(author=self.request.user, post=post)
 
 
