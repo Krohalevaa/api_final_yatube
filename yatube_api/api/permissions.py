@@ -9,12 +9,3 @@ class IsOwnerOrReadOnly(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         return request.method in SAFE_METHODS or obj.author == request.user
-
-
-class IsAuthenticatedAndOwnerOrReadOnly(BasePermission):
-    """
-    Разрешение, которое позволяет доступ только аутентифицированным
-    пользователям, а изменения объекта могут делать только его владельцы.
-    """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated
